@@ -5,7 +5,7 @@ const generateToken = require("../utils/generateToken");
 
 //register user
 const registerUser = async (req, res) => {
-    const { name, email, password } = req.body;
+    const { name, email, password, isAdmin } = req.body;
 
     try {
         const existingUser = await User.findOne({ email });
@@ -16,7 +16,7 @@ const registerUser = async (req, res) => {
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
 
-        const user = await User.create({name, email, password: hashedPassword});
+        const user = await User.create({name, email, password: hashedPassword}, isAdmin);
         if (user) {
             const otp = Math.floor(100000 + Math.random() * 900000).toString();
 
@@ -38,6 +38,7 @@ const registerUser = async (req, res) => {
                      _id: user._id,
                      name: user.name,
                      email:user.email,
+                     isAdmin: user.isAdmin
                 }
             );
         }
@@ -141,6 +142,7 @@ const loginUser = async (req, res) => {
             _id: user._id,
             name: user.name,
             email: user.email,
+            isAdmin: user.isAdmin,
             token
         });
 
@@ -167,4 +169,14 @@ const logoutUser = async (req, res) => {
     }
 };
 
-module.exports = { registerUser, loginUser, logoutUser, verifyOTP };
+// Get all users
+const getAllUsers = async (req, res) => {
+    try {
+        const users = await User.find();
+        return res.status(200).json(users);
+    } catch (err) {
+        return res.status(500).json({ message: "Error getting all users" });
+    }
+};
+
+module.exports = { registerUser, loginUser, logoutUser, verifyOTP, getAllUsers };
