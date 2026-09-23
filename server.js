@@ -22,9 +22,11 @@ app.get("/health", (req, res) => {
 
 //adding json parser
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 //adding routes
 app.use("/api/auth", require("./routes/authRoutes"));
+app.use("/api/products", require("./routes/productRoutes"));
 
 // intializing port number from .env file and starting server
 const port = process.env.PORT || 3000;
