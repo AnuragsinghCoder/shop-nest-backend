@@ -27,6 +27,7 @@ app.use(express.urlencoded({ extended: true }));
 //adding routes
 app.use("/api/auth", require("./routes/authRoutes"));
 app.use("/api/products", require("./routes/productRoutes"));
+app.use("/api/orders", require("./routes/orderRoutes"));
 
 // intializing port number from .env file and starting server
 const port = process.env.PORT || 3000;
